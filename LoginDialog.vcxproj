@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="17.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="loginqt5|x64">
+      <Configuration>loginqt5</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{A475A115-40BF-48D7-AF3C-8730A4910AF0}</ProjectGuid>
+    <Keyword>QtVS_v304</Keyword>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'">10.0.19041.0</WindowsTargetPlatformVersion>
+    <QtMsBuild Condition="'$(QtMsBuild)'=='' OR !Exists('$(QtMsBuild)\qt.targets')">$(MSBuildProjectDirectory)\QtMsBuild</QtMsBuild>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt_defaults.props')">
+    <Import Project="$(QtMsBuild)\qt_defaults.props" />
+  </ImportGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="QtSettings">
+    <QtInstall>6.7.0_msvc2019_64</QtInstall>
+    <QtModules>core;sql;gui;help;widgets</QtModules>
+    <QtBuildConfig>debug</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="QtSettings">
+    <QtInstall>6.3.0_msvc2019_64</QtInstall>
+    <QtModules>core;sql;gui;help;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'" Label="QtSettings">
+    <QtModules>core;gui;help;widgets</QtModules>
+    <QtBuildConfig>release</QtBuildConfig>
+    <QtInstall>5.9.9_msvc2019_64</QtInstall>
+    <QtHeaderSearchPath>
+    </QtHeaderSearchPath>
+    <QtLibrarySearchPath>
+    </QtLibrarySearchPath>
+  </PropertyGroup>
+  <Target Name="QtMsBuildNotFound" BeforeTargets="CustomBuild;ClCompile" Condition="!Exists('$(QtMsBuild)\qt.targets') or !Exists('$(QtMsBuild)\qt.props')">
+    <Message Importance="High" Text="QtMsBuild: could not locate qt.targets, qt.props; project may not build correctly." />
+  </Target>
+  <ImportGroup Label="ExtensionSettings" />
+  <ImportGroup Label="Shared" />
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(QtMsBuild)\Qt.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ExecutablePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ExternalIncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x64);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ReferencePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryPath>
+    <LibraryWPath>$(WindowsSDK_MetadataPath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryWPath>
+    <SourcePath>$(VC_SourcePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ExecutablePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ExternalIncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x64);;C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ReferencePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryPath>
+    <LibraryWPath>$(WindowsSDK_MetadataPath);;C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryWPath>
+    <SourcePath>$(VC_SourcePath);;C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</SourcePath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'">
+    <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);C:\data\ctpapi;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</ExecutablePath>
+    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\data\ctpapi;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</IncludePath>
+    <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);;C:\data\ctpapi;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</ExternalIncludePath>
+    <ReferencePath>$(VC_ReferencesPath_x64);;C:\data\ctpapiC:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</ReferencePath>
+    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\data\ctpapi;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</LibraryPath>
+    <LibraryWPath>$(WindowsSDK_MetadataPath);;C:\data\ctpapi;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</LibraryWPath>
+    <SourcePath>$(VC_SourcePath);;C:\data\ctpapi;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib</SourcePath>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);thosttraderapi_se.lib;thostmduserapi_se.lib</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\LoginDialog;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(QTDIR)\include\QtSql;C:\data\qt\6.3.0\msvc2019_64\lib;.\</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(QTDIR)\include\QtSql;C:\data\qt\6.3.0\msvc2019_64\lib;.\</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);thosttraderapi_se.lib;thostmduserapi_se.lib;WinDataCollect.lib;Qt6Sql.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);$(Qt_INCLUDEPATH_);$(QTDIR)\include\QtSql;C:\Qt\Qt5.9.9\5.9.9\msvc2017_64\lib;.\</AdditionalIncludeDirectories>
+    </ClCompile>
+    <Link>
+      <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);thosttraderapi_se.lib;thostmduserapi_se.lib;WinDataCollect.lib</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <Optimization>Disabled</Optimization>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='loginqt5|x64'" Label="Configuration">
+    <ClCompile>
+      <TreatWChar_tAsBuiltInType>true</TreatWChar_tAsBuiltInType>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <Optimization>MaxSpeed</Optimization>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="dataload.cpp" />
+    <ClCompile Include="loginmain.cpp" />
+    <ClCompile Include="mdapi.cpp" />
+    <ClCompile Include="mdquota.cpp" />
+    <ClCompile Include="mdspi.cpp" />
+    <ClCompile Include="quotalist.cpp" />
+    <ClCompile Include="test1.cpp" />
+    <ClCompile Include="test2.cpp" />
+    <ClCompile Include="test3.cpp" />
+    <ClCompile Include="traderapi.cpp" />
+    <ClCompile Include="traderspi.cpp" />
+    <QtRcc Include="logindialog.qrc" />
+    <QtUic Include="dataload.ui" />
+    <QtUic Include="logindialog.ui" />
+    <QtMoc Include="logindialog.h" />
+    <ClCompile Include="logindialog.cpp" />
+    <ClCompile Include="main.cpp" />
+    <QtUic Include="loginmain.ui" />
+    <QtUic Include="mdquota.ui" />
+    <QtUic Include="quotalist.ui" />
+    <QtUic Include="test1.ui" />
+    <QtUic Include="test2.ui" />
+    <QtUic Include="test3.ui" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ThostFtdcMdApi.h" />
+    <ClInclude Include="ThostFtdcTraderApi.h" />
+    <ClInclude Include="ThostFtdcUserApiDataType.h" />
+    <ClInclude Include="ThostFtdcUserApiStruct.h" />
+    <ClInclude Include="x64\Release\uic\ui_mdquota.h" />
+    <QtMoc Include="dataload.h" />
+    <ClInclude Include="mdapi.h" />
+    <ClInclude Include="mdspi.h" />
+    <ClInclude Include="x64\Debug\uic\ui_test1.h" />
+    <ClInclude Include="x64\Debug\uic\ui_test2.h" />
+    <ClInclude Include="x64\Debug\uic\ui_test3.h" />
+    <QtMoc Include="quotalist.h" />
+    <QtMoc Include="test1.h" />
+    <QtMoc Include="test2.h" />
+    <QtMoc Include="test3.h" />
+    <QtMoc Include="mdquota.h" />
+    <ClInclude Include="x64\Debug\uic\ui_loginmain.h" />
+    <QtMoc Include="loginmain.h" />
+    <ClInclude Include="traderapi.h" />
+    <ClInclude Include="traderspi.h" />
+    <ClInclude Include="main.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Condition="Exists('$(QtMsBuild)\qt.targets')">
+    <Import Project="$(QtMsBuild)\qt.targets" />
+  </ImportGroup>
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

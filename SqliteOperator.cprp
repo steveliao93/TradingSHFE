@@ -1,0 +1,97 @@
+#include "SqliteOperator.h"
+extern QSqlDatabase db;
+SqliteOperator::SqliteOperator() {
+
+}
+SqliteOperator::~SqliteOperator() {
+
+}
+void SqliteOperator::CreatDb()
+{
+    if (QSqlDatabase::contains("qt_sql_default_connection"))
+    {
+        db = QSqlDatabase::database("qt_sql_default_connection");
+    }
+    else
+    {
+        db = QSqlDatabase::addDatabase("QSQLITE");
+        db.setDatabaseName("test.db");
+        db.setUserName("test");
+        db.setPassword("test");
+    }
+}
+bool SqliteOperator::OpenDb()
+{
+    if (!db.open())
+    {
+        qDebug() << "Error: Failed to connect database." ;
+        return false;
+    }
+
+    return true;
+}
+void SqliteOperator::CloseDb()
+{
+    db.close();
+}
+void SqliteOperator::CreateTable()
+{
+    QSqlQuery sql_query;
+    QString creat_sql = "create table student (InstrumentID varchar(31),OrderRef varchar(13),Direction char,LimitPrice double)";
+    sql_query.prepare(creat_sql);
+    if (!sql_query.exec())
+    {
+        qDebug() << "Error: Fail to create table." ;
+    }
+    else
+    {
+        qDebug() << "Table created!";
+    }
+}
+//void SqliteOperator::InsertData(char * instrumentid,char *orderref,char direction,double limitprice)
+//{
+//    QString insert_sql = "insert into student values (?, ?, ?,?)";
+//    QSqlQuery sql_query;
+//    sql_query.prepare(insert_sql);
+//    sql_query.addBindValue(instrumentid);
+//    sql_query.addBindValue(orderref);
+//    sql_query.addBindValue(direction);
+//    sql_query.addBindValue(limitprice);
+//
+//    if (!sql_query.exec())
+//    {
+//       // qDebug() << sql_query.lastError();
+//    }
+//    else
+//    {
+//        qDebug() << "inserted Wang!";
+//    }
+//
+//}
+
+void SqliteOperator::QueryAllData()
+{
+
+
+    qDebug() << "selectselectselectselectselectselectselectselectselectselectselectselectselectselectselectselectselectselect";
+
+    QString select_all_sql = "select * from student";
+    QSqlQuery sql_query;
+    sql_query.prepare(select_all_sql);
+    if (!sql_query.exec())
+    {
+        qDebug() << "selectselectselectselectselectselectselectselectselectselectselectselectselectselectselectselectselectselect error  ";
+    }
+    else
+    {
+        while (sql_query.next())
+        {
+           // int id = sql_query.value(0).toInt();
+            QString instrumentid = sql_query.value(0).toString();
+            QString orderref = sql_query.value(1).toString();
+            QChar direction = sql_query.value(2).toChar();
+             double limitprice = sql_query.value(3).toDouble();
+            qDebug() << QString("instrumentid:%1    orderref:%2    direction:%3  limitprice:%4").arg(instrumentid).arg(orderref).arg(direction).arg(limitprice);
+        }
+    }
+}
