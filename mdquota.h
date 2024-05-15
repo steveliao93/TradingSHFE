@@ -10,7 +10,7 @@
 #include "ThostFtdcTraderApi.h"
 #include <QstandardItem>
 #include <QTableView>
-//#include <semaphore.h>
+#include <semaphore.h>
 #include <QMouseEvent>
 #include <QKeyEvent>
 
@@ -22,7 +22,7 @@ class mdquota : public QWidget, public CThostFtdcTraderSpi,public CThostFtdcMdSp
 {
 	Q_OBJECT
 private:
-	/*sem_t sem;
+	sem_t sem;
 	sem_t sem1;
 	sem_t sem2;
 
@@ -30,7 +30,7 @@ private:
 	sem_t sem4;
 	sem_t sem6;
 	sem_t sem5;
-	sem_t sem7;*/
+	sem_t sem7;
 
 
 
@@ -44,7 +44,8 @@ private:
 	int onrtnnumber=0;
 	//QstandardItemModel* faf;
 	QStandardItemModel* model;
-	QStandardItemModel* mode2;
+	QStandardItemModel* model2;
+	QStandardItemModel* model3;
 	//QSortFilterProxyModel* m_pFilterModel;
 	int rowquta=0;//最新价位置
 	int rowbid = 0;//买一价格位置
@@ -104,7 +105,7 @@ public:
 	mdquota(char* mdquotaname, double PriceTick, char *exchangeid,QWidget* parent = Q_NULLPTR);
 	~mdquota();
 	void setTradeApi(CTraderApi* TradeApi, CTraderSpi* ATradeSpi, CMdSpi* Cmdspi , CMdApi* Cmdapi);
-	void mdqutaqry();
+	void mdqutaqry(std::vector<std::string> instID_list);
 	void setqstan();
 
 protected:

@@ -5,12 +5,13 @@
 #include "ui_quotalist.h"
 #include <QstandardItem>
 #include <QTableView>
-//#include <semaphore.h>
+#include <semaphore.h>
 #include "mdapi.h"
 #include "mdspi.h"
 #include "traderapi.h"
 #include "traderspi.h"
 #include <QSortFilterProxyModel>
+#include <vector>
 //#include "Hook.h"
 
 namespace Ui {
@@ -25,8 +26,8 @@ class quotalist : public QWidget ,public CThostFtdcTraderSpi, public CThostFtdcM
 {
 	Q_OBJECT
 private:
-	/*sem_t sem;
-	sem_t sem1;*/
+	sem_t sem;
+	sem_t sem1;
 
 	CTraderApi* m_tradeApi;
 	CTraderSpi* m_TradeSpi;
@@ -35,6 +36,8 @@ private:
 	QStandardItemModel* model;
 	MusicInfoModel* m_pInfoModel;			//数据模型
 	QSortFilterProxyModel* m_pFilterModel;	//过滤代理模型
+
+	std::vector<CThostFtdcInstrumentField> vec;
 	// Hook hook;
 	int i = 0;
 	int ib = 0;
@@ -47,7 +50,10 @@ public:
 	~quotalist();
 	void mdqutalist();
 	void setTradeApi(CTraderApi* TradeApi, CTraderSpi* ATradeSpi, CMdSpi* Cmdspi, CMdApi* Cmdapi);
+	void saveContractList();
+	void readContractList();
 	char InstrumentID[31];
+	std::vector<std::string> instID_list;
 	//void searchAndFilterLocalSlot();
 	//void hookinstall();
 
@@ -55,6 +61,7 @@ public:
 private slots:
 	void onTableClicked(const QModelIndex& index);
 	void searchAndFilterLocalSlot();
+	void on_updateQuotalist_clicked();
 	//void checkType(Hook::Type);
 signals:
 	void dlgReturn(int);

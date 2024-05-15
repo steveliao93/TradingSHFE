@@ -4,6 +4,10 @@
 #include <stdio.h>
 #include <QDebug>
 //#include "define.h"
+#include <vector>
+#include <fstream>
+#include <QFile>
+#include <QTextStream>
 
 CThostFtdcTraderApi* CTraderApi::CreateFtdcTraderApi(const char* pszFlowPath /*= ""*/)
 {
@@ -952,6 +956,8 @@ int CTraderApi::ReqQryInstrument(CThostFtdcQryInstrumentField* pQryInstrument, i
 
     return m_pApi->ReqQryInstrument(pQryInstrument, nRequestID);
 };
+
+
 
 
 int CTraderApi::ReqQryDepthMarketData(CThostFtdcQryDepthMarketDataField* pQryDepthMarketData, int nRequestID)

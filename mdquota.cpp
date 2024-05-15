@@ -5,9 +5,10 @@
 #include <QTableView>
 #include<QMessageBox>
 #include<QScrollBar>
-//#include <semaphore.h>
+#include <semaphore.h>
 #include <iostream>
 #include <cstring>
+#include <algorithm>
 //#include "SqliteOperator.h"
 #include <mmsystem.h>
 #include <Windows.h>
@@ -32,21 +33,23 @@ mdquota::mdquota(char* mdquotaname, double PriceTick,char *exchangeid, QWidget* 
 	ui(new Ui::mdquota)
 {
 	model = new QStandardItemModel();
-	mode2 = new QStandardItemModel();
+	model2 = new QStandardItemModel();
+	model3 = new QStandardItemModel();
+
 	//Mdquotaname = mdquotaname;
 	strcpy(Mdquotaname, mdquotaname);
 	strcpy(Exchangeid, exchangeid);
 
 	priceTick = PriceTick;
 	this->setAttribute(Qt::WA_DeleteOnClose, true);
-	/*sem_init(&sem, 0, 1);
+	sem_init(&sem, 0, 1);
 	sem_init(&sem1, 0, 1);
 	sem_init(&sem2, 0, 1);
 	sem_init(&sem3, 0, 0);
 	sem_init(&sem4, 0, 1);
 	sem_init(&sem5, 0, 1);
 	sem_init(&sem6, 0, 0);
-	sem_init(&sem7, 0, 1);*/
+	sem_init(&sem7, 0, 1);
 
 
 
@@ -72,7 +75,7 @@ mdquota::mdquota(char* mdquotaname, double PriceTick,char *exchangeid, QWidget* 
 	
 	//qDebug() << "installEventFilterinstallEventFilterinstallEventFilterinstallEventFilterinstallEventFilterinstallEventFilterinstallEventFilter";
 
-	ui->tableView_2->setModel(mode2);
+	ui->tableView_2->setModel(model2);
 	//for (w = 0; w <= 200; w++) {
 	//	model->setItem(w, 0, new QStandardItem(""));
 	//	model->setItem(w, 1, new QStandardItem(""));
@@ -82,7 +85,7 @@ mdquota::mdquota(char* mdquotaname, double PriceTick,char *exchangeid, QWidget* 
 
 	//}
 	for (w = 0; w <= 4; w++) {
-		mode2->setItem(w, 0, new QStandardItem("waiting"));
+		model2->setItem(w, 0, new QStandardItem("waiting"));
 
 
 	}
@@ -124,6 +127,7 @@ mdquota::mdquota(char* mdquotaname, double PriceTick,char *exchangeid, QWidget* 
 	//ui->tableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 //	ui->tableView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::ResizeToContents);
 	ui->tableView->verticalHeader()->setDefaultSectionSize(15);
+	ui->tableView_3->verticalHeader()->setDefaultSectionSize(7);
 
 
 	timeid = startTimer(100);
@@ -281,7 +285,7 @@ void mdquota::OnFrontConnected() {
 	//  Authenticate();
  //	();
 }
-void mdquota::mdqutaqry() {
+void mdquota::mdqutaqry(std::vector<std::string> instID_list) {
 	ui->lineEdit->setText(userid);
 	ui->ddd->setText("start.............");
 	////ui->label
@@ -299,8 +303,23 @@ void mdquota::mdqutaqry() {
 	//ui->tableView->setModel(model);
 	//virtual int ReqQryInvestorPosition(CThostFtdcQryInvestorPositionField * pQryInvestorPosition, int nRequestID) = 0;
 	char* b[] = { Mdquotaname };
+	char b_underlying[3];
+	std::vector<std::string> product_futures_list;
+
+	/*CThostFtdcQryInstrumentField qsif1;
+	memset(&qsif1, 0, sizeof(qsif1));*/
+	strncpy(b_underlying, *b, 2);
+	b_underlying[2] = '\0';
+	//strcpy(qsif1.InstrumentID, b_underlying);
+	//m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
+
+	/*std::copy_if(instID_list.begin(), instID_list.end(), std::back_inserter(product_futures_list),
+		[b_underlying](std::string str) {
+		return std::strncmp(str, std::string(b_underlying), 2) == 0;
+	});*/
 
 	int c = c_mdapi->SubscribeMarketData(b, 1);
+	
 	qDebug("<mdquotaSubscribeMarketData[%d]>\n", c);
 	ui->label_5->setText(QString::number(0));
 	ui->label_6->setText(QString::number(0));
@@ -348,7 +367,7 @@ void mdquota::mdqutaqry() {
 int  mdquota::chaxunchican() {
 	int i;
 	qDebug("<chaxunbaodan  waiting............................................>\n");
-	/*for (i = 0; i < 8; i++) {
+	for (i = 0; i < 8; i++) {
 		if (sem_trywait(&sem4) != 0) {
 			qDebug("<OnRtnDepthMarketData  waiting............................................>\n");
 			Sleep(200);
@@ -364,7 +383,7 @@ int  mdquota::chaxunchican() {
 	if (i >= 7) {
 		sem_post(&sem4);
 		return 1;
-	}*/
+	}
 	qDebug("<chaxunchican sem_wait sucess............................................>\n");
 
 	CThostFtdcQryInvestorPositionField faf;
@@ -414,7 +433,7 @@ int  mdquota::chaxunmingxi() {
 int mdquota::chaxunbaodan() {
 	int i;
 	qDebug("<chaxunbaodan  waiting............................................>\n");
-	/*for (i = 0; i < 8; i++) {
+	for (i = 0; i < 8; i++) {
 		if (sem_trywait(&sem4) != 0) {
 			qDebug("<OnRtnDepthMarketData  waiting............................................>\n");
 			Sleep(200);
@@ -430,7 +449,7 @@ int mdquota::chaxunbaodan() {
 	if (i >= 7) {
 		sem_post(&sem4);
 		return 1;
-	}*/
+	}
 
 	qDebug("<chaxunbaodan sem_wait sucess............................................>\n");
 
@@ -464,10 +483,10 @@ void mdquota::OnRspError(CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool 
 
 }
 void mdquota::OnRspQryOrder(CThostFtdcOrderField* pOrder, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast) {
-	/*if (bIsLast) {
+	if (bIsLast) {
 		sem_post(&sem4);
 
-	}*/
+	}
 
 	if (pOrder == NULL) {
 		return;
@@ -649,10 +668,10 @@ void mdquota::OnRspQryInvestorPositionDetail(CThostFtdcInvestorPositionDetailFie
 
 void mdquota::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField* pInvestorPosition, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast) {
 	//kong
-	/*if (bIsLast) {
+	if (bIsLast) {
 		sem_post(&sem4);
 
-	}*/
+	}
 	if (pInvestorPosition == NULL) {
 		return;
 	}
@@ -714,12 +733,12 @@ void mdquota::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketD
 		}
 		hanqingtuisongnum = hanqingtuisongnum + 1;
 		//sem_wait(&sem5);
-		//if (sem_trywait(&sem5) != 0) {
-		////	qDebug("<OnRtnDepthMarketData  waiting............................................ %s>\n",Mdquotaname);
-		//	return;
-		//}
+		if (sem_trywait(&sem5) != 0) {
+		//	qDebug("<OnRtnDepthMarketData  waiting............................................ %s>\n",Mdquotaname);
+			return;
+		}
 		memcpy(&PDepthMarketData, pDepthMarketData, sizeof(CThostFtdcDepthMarketDataField));
-		//sem_post(&sem6);
+		sem_post(&sem6);
 
 	}
 }
@@ -762,24 +781,24 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 			//	qDebug("<OnRtnDepthMarketData  waiting............................................>\n");
 			//	return;
 			//}
-			//if (sem_trywait(&sem6) != 0) {
-			////	qDebug("<showtable  waiting............................................%s  %d>\n", Mdquotaname,hangqingnum);
-			//	if (hangqingnum >= 200 && hanqingtuisongnum>20) {
-			//		hangqingnum = 0;
-			//		if (qutastatus == '2') {
-			//			char* b[] = { Mdquotaname };
-			//		//	qDebug("<%s  SubscribeMarketData  return ............................................>\n", Mdquotaname);
-			//			int c = c_mdapi->SubscribeMarketData(b, 1);
-			//		}
-			//	//	qDebug("<%s  drop SubscribeMarketData  return wiht qutastatus not 2  ............................................>\n", Mdquotaname);
+			if (sem_trywait(&sem6) != 0) {
+			//	qDebug("<showtable  waiting............................................%s  %d>\n", Mdquotaname,hangqingnum);
+				if (hangqingnum >= 200 && hanqingtuisongnum>20) {
+					hangqingnum = 0;
+					if (qutastatus == '2') {
+						char* b[] = { Mdquotaname };
+					//	qDebug("<%s  SubscribeMarketData  return ............................................>\n", Mdquotaname);
+						int c = c_mdapi->SubscribeMarketData(b, 1);
+					}
+				//	qDebug("<%s  drop SubscribeMarketData  return wiht qutastatus not 2  ............................................>\n", Mdquotaname);
 
-			//		//return;
-			//	}
-			////	qDebug("<showtable  waiting............................................>\n");
-			//	//continue;
-			//	hangqingnum = hangqingnum + 1;
-			//	return;
-			//}
+					//return;
+				}
+			//	qDebug("<showtable  waiting............................................>\n");
+				//continue;
+				hangqingnum = hangqingnum + 1;
+				return;
+			}
 			if (onrtnnumber == 0) {
 				//绘制
 					//32000.00
@@ -789,13 +808,13 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 					ui->lineEdit_4->setText(QString::number(pDepthMarketData->OpenInterest));
 					ui->lineEdit_5->setText(QString::number(pDepthMarketData->OpenInterest- pDepthMarketData->PreOpenInterest));*/
 
-				mode2->setItem(0, 0, new QStandardItem(QString::number(pDepthMarketData->PreClosePrice)));
-				mode2->setItem(1, 0, new QStandardItem(QString::number(pDepthMarketData->OpenPrice)));
+				model2->setItem(0, 0, new QStandardItem(QString::number(pDepthMarketData->PreClosePrice)));
+				model2->setItem(1, 0, new QStandardItem(QString::number(pDepthMarketData->OpenPrice)));
 				if (pDepthMarketData->PreClosePrice > pDepthMarketData->OpenPrice) {
-					mode2->item(1, 0)->setForeground(QBrush(QColor(0, 209, 255)));
+					model2->item(1, 0)->setForeground(QBrush(QColor(0, 209, 255)));
 				}
 				else {
-					mode2->item(1, 0)->setForeground(QBrush(QColor(255, 0, 0)));
+					model2->item(1, 0)->setForeground(QBrush(QColor(255, 0, 0)));
 				}
 
 				//startprice = pDepthMarketData->LastPrice + 2000 * priceTick;
@@ -892,22 +911,22 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 
 				//if(pDepthMarketData->AskPrice1>pDepthMarketData->)
 				//	ui->lineEdit_6->setText(QString::number(((pDepthMarketData->LastPrice - pDepthMarketData->PreClosePrice) / (pDepthMarketData->PreClosePrice)*100),'f',2) + QString::fromStdString("%"));
-				mode2->setItem(2, 0, new QStandardItem(QString::number(pDepthMarketData->OpenInterest)));
-				mode2->setItem(3, 0, new QStandardItem(QString::number(pDepthMarketData->OpenInterest - pDepthMarketData->PreOpenInterest)));
-				mode2->setItem(4, 0, new QStandardItem(QString::number(((pDepthMarketData->LastPrice - pDepthMarketData->PreClosePrice) / (pDepthMarketData->PreClosePrice) * 100), 'f', 2) + QString::fromStdString("%")));
-				mode2->setItem(5, 0, new QStandardItem(QString::number(pDepthMarketData->Volume)));
+				model2->setItem(2, 0, new QStandardItem(QString::number(pDepthMarketData->OpenInterest)));
+				model2->setItem(3, 0, new QStandardItem(QString::number(pDepthMarketData->OpenInterest - pDepthMarketData->PreOpenInterest)));
+				model2->setItem(4, 0, new QStandardItem(QString::number(((pDepthMarketData->LastPrice - pDepthMarketData->PreClosePrice) / (pDepthMarketData->PreClosePrice) * 100), 'f', 2) + QString::fromStdString("%")));
+				model2->setItem(5, 0, new QStandardItem(QString::number(pDepthMarketData->Volume)));
 				//char *a=  pDepthMarketData->ActionDay
 				if (pDepthMarketData->PreOpenInterest > pDepthMarketData->OpenInterest) {
-					mode2->item(3, 0)->setForeground(QBrush(QColor(0, 209, 255)));
+					model2->item(3, 0)->setForeground(QBrush(QColor(0, 209, 255)));
 				}
 				else {
-					mode2->item(3, 0)->setForeground(QBrush(QColor(255, 0, 0)));
+					model2->item(3, 0)->setForeground(QBrush(QColor(255, 0, 0)));
 				}
 				if (pDepthMarketData->PreClosePrice > pDepthMarketData->LastPrice) {
-					mode2->item(4, 0)->setForeground(QBrush(QColor(0, 209, 255)));
+					model2->item(4, 0)->setForeground(QBrush(QColor(0, 209, 255)));
 				}
 				else {
-					mode2->item(4, 0)->setForeground(QBrush(QColor(255, 0, 0)));
+					model2->item(4, 0)->setForeground(QBrush(QColor(255, 0, 0)));
 				}
 				int rowbidx = (int(startprice * 100) - int(pDepthMarketData->BidPrice1 * 100)) / int(priceTick * 100);
 				int tmp = 0;
@@ -1072,7 +1091,7 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 				//	ui->tableView->scrollTo(ui->tableView->model()->index(rowaskx, 0));
 
 		}
-		//sem_post(&sem5);
+		sem_post(&sem5);
 	//}
 }
 void mdquota::OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast) {
@@ -1197,7 +1216,7 @@ void  mdquota::OnRtnOrder(CThostFtdcOrderField* pOrder) {
 
 	int faf;
 
-	//sem_wait(&sem2);
+	sem_wait(&sem2);
 	//sem_wait(&sem3);
 
 	if (pOrder->Direction == THOST_FTDC_D_Buy) {
@@ -1205,7 +1224,7 @@ void  mdquota::OnRtnOrder(CThostFtdcOrderField* pOrder) {
 		if (pOrder->OrderSubmitStatus == THOST_FTDC_OSS_InsertSubmitted && (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeQueueing || pOrder->OrderStatus == THOST_FTDC_OST_NoTradeNotQueueing || pOrder->OrderStatus == THOST_FTDC_OST_Unknown || pOrder->OrderStatus == THOST_FTDC_OST_NotTouched || pOrder->OrderStatus == THOST_FTDC_OST_Touched)) {//部分成交还在队列
 
 			if (pOrder->SequenceNo != 0) {
-				//sem_post(&sem2);
+				sem_post(&sem2);
 				//sem_post(&sem3);
 
 				return;
@@ -1284,7 +1303,7 @@ void  mdquota::OnRtnOrder(CThostFtdcOrderField* pOrder) {
 
 			}
 			//PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC);
-			//sem_post(&sem3);
+			sem_post(&sem3);
 
 			PlaySound(TEXT("Cancellation.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NOSTOP| SND_NOWAIT);
 			ui->lineEdit_2->setText(QString::number(ui->lineEdit_2->text().toInt() + 1));
@@ -1358,7 +1377,7 @@ void  mdquota::OnRtnOrder(CThostFtdcOrderField* pOrder) {
 		//if (pOrder->OrderSubmitStatus == THOST_FTDC_OSS_InsertSubmitted) {//已提交
 		if (pOrder->OrderSubmitStatus == THOST_FTDC_OSS_InsertSubmitted && (pOrder->OrderStatus == THOST_FTDC_OST_NoTradeQueueing || pOrder->OrderStatus == THOST_FTDC_OST_NoTradeNotQueueing || pOrder->OrderStatus == THOST_FTDC_OST_Unknown || pOrder->OrderStatus == THOST_FTDC_OST_NotTouched || pOrder->OrderStatus == THOST_FTDC_OST_Touched)) {//部分成交还在队列
 			if (pOrder->SequenceNo != 0) {
-				//sem_post(&sem2);
+				sem_post(&sem2);
 			//	sem_post(&sem3);
 
 
@@ -1430,7 +1449,7 @@ void  mdquota::OnRtnOrder(CThostFtdcOrderField* pOrder) {
 				model->item(xy, 3)->setBackground(QBrush(QColor(255, 215, 0)));
 
 			}
-			//sem_post(&sem3);
+			sem_post(&sem3);
 
 			//PlaySound(NULL, NULL, SND_FILENAME | SND_ASYNC);
 			PlaySound(TEXT("Cancellation.wav"), NULL, SND_FILENAME | SND_ASYNC | SND_NOSTOP| SND_NOWAIT);
@@ -1516,7 +1535,7 @@ void  mdquota::OnRtnOrder(CThostFtdcOrderField* pOrder) {
 		}
 	}
 	
-	//sem_post(&sem2);
+	sem_post(&sem2);
 	//sem_post(&sem3);
 
 
@@ -1529,7 +1548,7 @@ void mdquota::OnRtnTrade(CThostFtdcTradeField* pTrade) {
 	if (strcmp(pTrade->InstrumentID, Mdquotaname) != 0) {
 		return;
 	}
-	//sem_wait(&sem7);
+	sem_wait(&sem7);
 
 	if (pTrade->Direction == THOST_FTDC_D_Buy) {
 		baqodanduo = baqodanduo - pTrade->Volume;
@@ -1769,7 +1788,7 @@ void mdquota::OnRtnTrade(CThostFtdcTradeField* pTrade) {
 	ui->label_5->setText(QString::number(yeschicankong));
 	ui->label_7->setText(QString::number(chicanduo));
 	ui->label_6->setText(QString::number(yeschicanduo));
-	//sem_post(&sem7);
+	sem_post(&sem7);
 
 
 	//chaxunchican();
@@ -1778,7 +1797,7 @@ void mdquota::OnRtnTrade(CThostFtdcTradeField* pTrade) {
 
 
 void mdquota::onTableClicked(const QModelIndex& Indexx) {
-	//sem_wait(&sem);
+	sem_wait(&sem);
 	qDebug("\tcheck [%d] ---   [%d]\n", Indexx.row(), Indexx.column());
 	//chaxunmingxi();
 	// 0 1 2 3 4 
@@ -1804,31 +1823,31 @@ void mdquota::onTableClicked(const QModelIndex& Indexx) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 
 					qDebug("fasong chedan\n");
 
@@ -1874,30 +1893,30 @@ void mdquota::onTableClicked(const QModelIndex& Indexx) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 				}
 			}
 		
@@ -2003,30 +2022,30 @@ void mdquota::onTableClicked(const QModelIndex& Indexx) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 
 				}
 			}
@@ -2135,30 +2154,30 @@ void mdquota::onTableClicked(const QModelIndex& Indexx) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
-					//qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
-					//int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					sem_getvalue(&sem3, &valp);
+					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
+					int xa;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 					qDebug("fasong chedan\n");
 
 
@@ -2192,12 +2211,12 @@ void mdquota::onTableClicked(const QModelIndex& Indexx) {
 	//model->removeRow(index.row());
 	//ui->tablelist->setModel(model);
 
-	//sem_post(&sem);
+	sem_post(&sem);
 }
 void mdquota::rightcheck(const QPoint pos) {
 	auto Indexx = ui->tableView->indexAt(pos);
 	qDebug("\tright check [%d] ---   [%d]\n", Indexx.row(), Indexx.column());
-	//sem_wait(&sem);
+	sem_wait(&sem);
 	//qDebug("\tcheck [%d] ---   [%d]\n", Indexx.row(), Indexx.column());
 	//chaxunmingxi();
 	// 0 1 2 3 4 
@@ -2222,31 +2241,31 @@ void mdquota::rightcheck(const QPoint pos) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 
 				}
 			}
@@ -2287,31 +2306,31 @@ void mdquota::rightcheck(const QPoint pos) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 
 				}
 			}
@@ -2420,31 +2439,31 @@ void mdquota::rightcheck(const QPoint pos) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 
 				}
 			}
@@ -2547,31 +2566,31 @@ void mdquota::rightcheck(const QPoint pos) {
 					deord.VolumeChange = 0;
 					strcpy(deord.UserID, userid);
 					strcpy(deord.ExchangeID, Exchangeid);
-					//sem_init(&sem3, 0, 0);
+					sem_init(&sem3, 0, 0);
 
 					m_tradeApi->ReqOrderAction(&deord, requestId++);
 					int valp;
-					//sem_getvalue(&sem3, &valp);
+					sem_getvalue(&sem3, &valp);
 					qDebug("<sem_trywait  sem3 start............................................%d>\n", valp);
 
 					int xa;
-					//for (xa = 0; xa < 8; xa++) {
-					//	if (sem_trywait(&sem3) != 0) {
-					//		qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
-					//		Sleep(50);
-					//		continue;
+					for (xa = 0; xa < 8; xa++) {
+						if (sem_trywait(&sem3) != 0) {
+							qDebug("<sem_trywait  sem3 ............................................%d>\n", valp);
+							Sleep(50);
+							continue;
 
-					//	}
-					//	else {
-					//		break;
-					//	}
+						}
+						else {
+							break;
+						}
 
 
-					//}
-					//if (i >= 7) {
-					//	sem_post(&sem3);
-					//	//return 1;
-					//}
+					}
+					if (i >= 7) {
+						sem_post(&sem3);
+						//return 1;
+					}
 
 				}
 			}
@@ -2583,7 +2602,7 @@ void mdquota::rightcheck(const QPoint pos) {
 	}
 	
 
-	//sem_post(&sem);
+	sem_post(&sem);
 }
 //void mdquota::wheelEvent(QWheelEvent* event) {
 //	//qDebug("wheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEventwheelEvent");

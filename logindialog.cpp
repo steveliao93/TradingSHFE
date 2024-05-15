@@ -8,7 +8,7 @@
 
 
 #include "logindialog.h"
-//#include "ui_logindialog.h"
+#include "ui_logindialog.h"
 #include "traderspi.h"
 #include <QtDebug>
 #include <QMessageBox>
@@ -23,8 +23,8 @@ LoginDialog::LoginDialog(QWidget* parent) :
     QDialog(parent),
     ui(new Ui::LoginDialogClass)
 {
-    /*sem_init(&sem, 0, 1);
-    sem_init(&sem1, 0, 1);*/
+    sem_init(&sem, 0, 1);
+    sem_init(&sem1, 0, 1);
 
     ui->setupUi(this);
 }
@@ -134,10 +134,10 @@ void LoginDialog::OnRspUserLogin(CThostFtdcRspUserLoginField* pRspUserLogin, CTh
     }
 }
 int LoginDialog::Userauth() {
-   /* if (sem_trywait(&sem1) != 0) {
+    if (sem_trywait(&sem1) != 0) {
         return 0;
     }
-    else {*/
+    else {
         ui->lbl_status->setText(ui->lbl_status->text() + "\n" + "login1111");
         // ui->lbl_status->repaint();
 
@@ -148,7 +148,7 @@ int LoginDialog::Userauth() {
         CThostFtdcReqAuthenticateField ReqAuthentLogin;
         memset(&ReqAuthentLogin, 0, sizeof(ReqAuthentLogin));
         strcpy_s(ReqAuthentLogin.BrokerID, "4020");
-        ///strcpy_s(ReqAuthentLogin.UserID, "00001");
+        ///strcpy_s(ReqAuthentLogin.UserID, "00096");
          strcpy_s(ReqAuthentLogin.UserID, sUserid.toStdString().c_str());
 
         strcpy_s(ReqAuthentLogin.AuthCode, "L6HTO9EXQ83ASX36");
@@ -158,9 +158,9 @@ int LoginDialog::Userauth() {
 
 
         return  m_tradeApi->ReqAuthenticate(&ReqAuthentLogin, requestId++);
-        //sem_post(&sem1);
+        sem_post(&sem1);
 
-    //}
+    }
 }
 
 void LoginDialog::LoginMessage() {
@@ -176,10 +176,10 @@ void LoginDialog::LoginMessage() {
 }
 
 int LoginDialog::UserLogin() {
-    /*if (sem_trywait(&sem) != 0) {
+    if (sem_trywait(&sem) != 0) {
         return 0;
     }
-    else {*/
+    else {
         // qDebug() << "用户登陆" << endl;
         ui->lbl_status->setText(ui->lbl_status->text() + "\n" + "login1111");
         // ui->lbl_status->repaint();
@@ -223,10 +223,10 @@ int LoginDialog::UserLogin() {
         Sleep(20000);*/
        
         
-        //sem_post(&sem);
+        sem_post(&sem);
         return 0;
 
-    //}
+    }
 }
 //
 //int LoginDialog::Authenticate() {

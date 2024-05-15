@@ -20,6 +20,8 @@ public:
 	CTraderApi(): m_pApi(nullptr) {};
 	~CTraderApi() {};
 
+	
+
 
 public:
 	///创建TraderApi

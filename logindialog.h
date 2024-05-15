@@ -25,7 +25,7 @@
 #include "ThostFtdcTraderApi.h"
 #include "mdspi.h"
 #include "mdapi.h"
-//#include <semaphore.h>
+#include <semaphore.h>
 
 
 
@@ -38,8 +38,8 @@ class LoginDialog : public QDialog, public CThostFtdcTraderSpi, public CThostFtd
     Q_OBJECT
 
 private:
-    /*sem_t sem;
-    sem_t sem1;*/
+    sem_t sem;
+    sem_t sem1;
 
 
     CTraderApi* m_tradeApi;

@@ -75,11 +75,10 @@ void loginmain::on_mainquotabut_clicked() {
 	xxx->mdqutalist();
 	//Sleep(2000);
 	//xxx->searchAndFilterLocalSlot();
-
 	//mdquota::mdqutaqry();
 	//t->mdqutaqry();
 	//xxx->show();
-	delete xxx;
+	
 }
 void loginmain::on_checktime_clicked() {
 

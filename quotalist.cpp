@@ -3,6 +3,10 @@
 #include <QTableView>
 #include "mdquota.h"
 #include<QMessageBox>
+#include <vector>
+#include <fstream>
+#include <QFile>
+#include <QTextStream>
 
 
 extern CTraderApi* C_TradeApi;
@@ -17,8 +21,8 @@ quotalist::quotalist(QWidget *parent)
 	ui(new Ui::quotalist)
 
 {
-	//sem_init(&sem, 0, 1);
-	//sem_init(&sem1, 0, 0);
+	sem_init(&sem, 0, 1);
+	sem_init(&sem1, 0, 0);
 	this->setAttribute(Qt::WA_DeleteOnClose, true);
 
 	model = new QStandardItemModel(); 
@@ -27,7 +31,6 @@ quotalist::quotalist(QWidget *parent)
 	m_pFilterModel->setSourceModel(m_pInfoModel);
 
 	ui->setupUi(this);
-
 	
 
 	//connect(this, SIGNAL(dlgReturn(int)), this, SLOT(on_loginbtn_chick2(int)));
@@ -63,7 +66,7 @@ void quotalist::setTradeApi(CTraderApi* TradeApi, CTraderSpi* ATradeSpi, CMdSpi*
 
 void quotalist::mdqutalist()
 {
-
+	readContractList();
 	//model->setItem(i++, 0, new QStandardItem("sn2205"));
 	//model->setItem(i++, 0, new QStandardItem("sn2206"));
 	//model->setItem(i++, 0, new QStandardItem("sn2207"));
@@ -79,29 +82,29 @@ void quotalist::mdqutalist()
 	//model->setItem(i++, 0, new QStandardItem("zn2206"));
 	//model->setItem(i++, 0, new QStandardItem("zn2207"));
 	//model->setItem(i++, 0, new QStandardItem("zn2208"));
-	CThostFtdcQryInstrumentField qsif1;
-	memset(&qsif1, 0, sizeof(qsif1));
-	//strcpy(qsif1.ExchangeID, "SHFE");
-	CThostFtdcQryInstrumentField qsif2;
-	memset(&qsif2, 0, sizeof(qsif2));
-	strcpy(qsif2.ExchangeID, "CFFEX");
-	CThostFtdcQryInstrumentField qsif3;
-	memset(&qsif3, 0, sizeof(qsif3));
-	strcpy(qsif3.ExchangeID, "CZCE");
-	CThostFtdcQryInstrumentField qsif4;
-	memset(&qsif4, 0, sizeof(qsif4));
-	strcpy(qsif4.ExchangeID, "DCE");
-	CThostFtdcQryInstrumentField qsif5;
-	memset(&qsif5, 0, sizeof(qsif5));
-	//strcpy(qsif5.ExchangeID, "INE");
-	//strcpy(qsif.InstrumentID, "sn2207");
-	//strcpy(qsif.ExchangeInstID, "sn2207");
+	//CThostFtdcQryInstrumentField qsif1;
+	//memset(&qsif1, 0, sizeof(qsif1));
+	////strcpy(qsif1.ExchangeID, "SHFE");
+	//CThostFtdcQryInstrumentField qsif2;
+	//memset(&qsif2, 0, sizeof(qsif2));
+	//strcpy(qsif2.ExchangeID, "CFFEX");
+	//CThostFtdcQryInstrumentField qsif3;
+	//memset(&qsif3, 0, sizeof(qsif3));
+	//strcpy(qsif3.ExchangeID, "CZCE");
+	//CThostFtdcQryInstrumentField qsif4;
+	//memset(&qsif4, 0, sizeof(qsif4));
+	//strcpy(qsif4.ExchangeID, "DCE");
+	//CThostFtdcQryInstrumentField qsif5;
+	//memset(&qsif5, 0, sizeof(qsif5));
+	////strcpy(qsif5.ExchangeID, "INE");
+	////strcpy(qsif.InstrumentID, "sn2207");
+	////strcpy(qsif.ExchangeInstID, "sn2207");
 
+	////m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
+	////m_tradeApi->ReqQryInstrument(&qsif2, ++requestId);
+	////m_tradeApi->ReqQryInstrument(&qsif3, ++requestId);
+	////m_tradeApi->ReqQryInstrument(&qsif4, ++requestId);
 	//m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
-	//m_tradeApi->ReqQryInstrument(&qsif2, ++requestId);
-	//m_tradeApi->ReqQryInstrument(&qsif3, ++requestId);
-	//m_tradeApi->ReqQryInstrument(&qsif4, ++requestId);
-	m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
 
 
 	//ui->tablelist->setModel(model);
@@ -115,13 +118,13 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 	}
 	Sleep(3000);
 	//sem_wait(&sem1);
-	//if (sem_trywait(&sem1) != 0) {
-	//	//	qDebug("<showtable  waiting............................................>\n");
-	//		//continue;
-	//	QMessageBox::information(this, "Notice", "data  loading please wait......");
+	if (sem_trywait(&sem1) != 0) {
+		//	qDebug("<showtable  waiting............................................>\n");
+			//continue;
+		QMessageBox::information(this, "Notice", "data  loading please wait......");
 
-	//	return;
-	//}
+		return;
+	}
 	//sem_wait(&sem);
 
 	/*if (index.isvalid()) {
@@ -169,7 +172,7 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 	t->setWindowTitle(m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column())).toString().toLatin1().data());
 	//qDebug("<555>\n");
 
-	t->mdqutaqry();
+	t->mdqutaqry(instID_list);
 	//Sleep(3000);
 	t->setqstan();
 	//t->showtable();
@@ -178,17 +181,17 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 	// t->setTradeApi(C_TradeApi, C_TradeSpi, C_MdSpi, C_MdApi);
 	//model->removeRow(index.row());
 	//ui->tablelist->setModel(model);
-	//sem_post(&sem1);
+	sem_post(&sem1);
 
 	//sem_post(&sem);
-	delete t;
+	
 
 }
 void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast) {
-	//if (bIsLast) {
-	//	//qDebug("<55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555>\n");
-	//	sem_post(&sem1);
-	//}
+	if (bIsLast) {
+		//qDebug("<55555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555>\n");
+		sem_post(&sem1);
+	}
 //	// model->setItem(i++, 0, new QStandardItem("zn2208"));
 //	qDebug("<55555555555555555555555555555555>\n");
 //
@@ -212,7 +215,12 @@ void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThos
 	m_pInfoModel->setItem(ib, 0, new QStandardItem(pInstrument->ExchangeInstID));
 	m_pInfoModel->setItem(ib, 1, new QStandardItem(QString::number(pInstrument->PriceTick)));
 	m_pInfoModel->setItem(ib++, 2, new QStandardItem(pInstrument->ExchangeID));
+	vec.push_back(*pInstrument);
+	instID_list.push_back(pInstrument->ExchangeInstID);
 
+	if (bIsLast) {
+		saveContractList();
+	}
 //	QString::number(jfjfe))
 	//QList<QStandardItem*> list;
 	//list << new QStandardItem(pInstrument->ExchangeInstID) << new QStandardItem(pInstrument->PriceTick);
@@ -224,6 +232,81 @@ void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThos
 	 ////memcpy(InstrumentID, pInstrument->InstrumentID, strlen(pInstrument->InstrumentID));
 
 }
+
+void quotalist::saveContractList()
+{
+	std::ofstream outputFile("quotalist.txt");
+
+	for (const auto& instrument : vec) {
+		outputFile << "ExchangeInstID: " << instrument.ExchangeInstID << std::endl;
+		outputFile << "PriceTick: " << instrument.PriceTick << std::endl;
+		outputFile << "ExchangeID: " << instrument.ExchangeID << std::endl;
+	}
+	outputFile.close();
+
+	qDebug("Quota list saved.");
+}
+
+void quotalist::readContractList()
+{
+	std::ifstream inputFile("quotalist.txt");
+
+	if (!inputFile.is_open()) {
+		std::cerr << "Failed to open file for reading. Plesae update.." << std::endl;
+		return;
+	}
+
+	std::string line;
+	
+	while (std::getline(inputFile, line)) {
+		// Assuming each line has format "Key: Value"
+		size_t pos = line.find(": ");
+		if (pos != std::string::npos) {
+			std::string key = line.substr(0, pos);
+			std::string value = line.substr(pos + 2); 
+
+			if (key == "ExchangeInstID") {
+				m_pInfoModel->setItem(ib, 0, new QStandardItem(value.data()));
+			}
+			else if (key == "PriceTick") {
+				m_pInfoModel->setItem(ib, 1, new QStandardItem(QString::number(std::stod(value))));
+			}
+			else if (key == "ExchangeID") {
+				m_pInfoModel->setItem(ib++, 2, new QStandardItem(value.data()));
+			}
+		}
+	}
+	inputFile.close();
+	std::cout << "Quota list loaded." << std::endl;
+}
+
+void quotalist::on_updateQuotalist_clicked()
+{
+	CThostFtdcQryInstrumentField qsif1;
+	memset(&qsif1, 0, sizeof(qsif1));
+	//strcpy(qsif1.ExchangeID, "SHFE");
+	CThostFtdcQryInstrumentField qsif2;
+	memset(&qsif2, 0, sizeof(qsif2));
+	strcpy(qsif2.ExchangeID, "CFFEX");
+	CThostFtdcQryInstrumentField qsif3;
+	memset(&qsif3, 0, sizeof(qsif3));
+	strcpy(qsif3.ExchangeID, "CZCE");
+	CThostFtdcQryInstrumentField qsif4;
+	memset(&qsif4, 0, sizeof(qsif4));
+	strcpy(qsif4.ExchangeID, "DCE");
+	CThostFtdcQryInstrumentField qsif5;
+	memset(&qsif5, 0, sizeof(qsif5));
+	//strcpy(qsif5.ExchangeID, "INE");
+	//strcpy(qsif.InstrumentID, "sn2207");
+	//strcpy(qsif.ExchangeInstID, "sn2207");
+
+	//m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
+	//m_tradeApi->ReqQryInstrument(&qsif2, ++requestId);
+	//m_tradeApi->ReqQryInstrument(&qsif3, ++requestId);
+	//m_tradeApi->ReqQryInstrument(&qsif4, ++requestId);
+	m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
+}
+
 void quotalist::searchAndFilterLocalSlot()
 {
 	QString strKeyword = ui->lineEdit->text();

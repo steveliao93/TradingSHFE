@@ -78,10 +78,10 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <ExecutablePath>$(VC_ExecutablePath_x64);$(CommonExecutablePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ExecutablePath>
-    <IncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</IncludePath>
+    <IncludePath>C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\pthreads-w32-2-9-1-release\Pre-built.2\include;$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</IncludePath>
     <ExternalIncludePath>$(VC_IncludePath);$(WindowsSDK_IncludePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ExternalIncludePath>
     <ReferencePath>$(VC_ReferencesPath_x64);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</ReferencePath>
-    <LibraryPath>$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryPath>
+    <LibraryPath>C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\pthreads-w32-2-9-1-release\Pre-built.2\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryPath>
     <LibraryWPath>$(WindowsSDK_MetadataPath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</LibraryWPath>
     <SourcePath>$(VC_SourcePath);C:\data\ctpapi;C:\data\qt\6.3.0\msvc2019_64\lib</SourcePath>
   </PropertyGroup>
@@ -105,7 +105,7 @@
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
-      <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);thosttraderapi_se.lib;thostmduserapi_se.lib</AdditionalDependencies>
+      <AdditionalDependencies>%(AdditionalDependencies);$(Qt_LIBS_);thosttraderapi_se.lib;thostmduserapi_se.lib;C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86\pthreadVC2.lib;C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86\pthreadVSE2.lib;C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\pthreads-w32-2-9-1-release\Pre-built.2\lib\x64\pthreadVC2.lib;C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\pthreads-w32-2-9-1-release\Pre-built.2\lib\x86\pthreadVCE2.lib</AdditionalDependencies>
       <AdditionalLibraryDirectories>C:\Users\steveliao\Dropbox\c_projects\liyan\LoginDialogzip\LoginDialog;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <ClCompile>
