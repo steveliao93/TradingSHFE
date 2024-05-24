@@ -90,6 +90,11 @@ mdquota::mdquota(char* mdquotaname, double PriceTick,char *exchangeid, QWidget* 
 
 	}
 	//model->setItem(1, 1, new QStandardItem(""));
+	model3->setColumnCount(2);
+	model3->setHeaderData(0, Qt::Horizontal, QStringLiteral("合约ID"));
+	model3->setHeaderData(1, Qt::Horizontal, QStringLiteral("预值"));
+
+	
 
 
 	//ui->tableView->setModel(model);
@@ -285,7 +290,20 @@ void mdquota::OnFrontConnected() {
 	//  Authenticate();
  //	();
 }
-void mdquota::mdqutaqry(std::vector<std::string> instID_list) {
+
+void mdquota::on_applyPreValue_clicked() {
+	for (int i = 0; i < model3->rowCount(); ++i) {
+		QString contractName = model3->item(i, 0)->text();
+		QStandardItem* item = model3->item(i, 1);
+		int preValue;
+		if (item) { preValue = item->text().toInt(); }
+		else { preValue = 0; }
+		
+		preValuesMap[contractName.toStdString()] = preValue;
+	}
+}
+
+void mdquota::mdqutaqry(std::vector<std::string> instID_list, char* ProductID) {
 	ui->lineEdit->setText(userid);
 	ui->ddd->setText("start.............");
 	////ui->label
@@ -303,22 +321,34 @@ void mdquota::mdqutaqry(std::vector<std::string> instID_list) {
 	//ui->tableView->setModel(model);
 	//virtual int ReqQryInvestorPosition(CThostFtdcQryInvestorPositionField * pQryInvestorPosition, int nRequestID) = 0;
 	char* b[] = { Mdquotaname };
-	char b_underlying[3];
-	std::vector<std::string> product_futures_list;
+	
+	char* futureArrays[20];
+	int resultCount = 0;
 
-	/*CThostFtdcQryInstrumentField qsif1;
-	memset(&qsif1, 0, sizeof(qsif1));*/
-	strncpy(b_underlying, *b, 2);
-	b_underlying[2] = '\0';
-	//strcpy(qsif1.InstrumentID, b_underlying);
-	//m_tradeApi->ReqQryInstrument(&qsif1, ++requestId);
+	for (std::string& str : instID_list) {
+		if ((str.substr(0, 1) == ProductID && str.length() == 5) || (str.substr(0, 2) == ProductID && str.length() == 6)) {
+			futureArrays[resultCount] = new char[str.length() + 1];
+			std::strcpy(futureArrays[resultCount], str.c_str());
+			++resultCount;
+		}
+	}
+	int c = c_mdapi->SubscribeMarketData(futureArrays, resultCount);
+	
 
-	/*std::copy_if(instID_list.begin(), instID_list.end(), std::back_inserter(product_futures_list),
-		[b_underlying](std::string str) {
-		return std::strncmp(str, std::string(b_underlying), 2) == 0;
-	});*/
+	std::vector<std::string> FA;
+	for (i = 0; i < resultCount; i++) {
+		FA.push_back(futureArrays[i]);
+	}
 
-	int c = c_mdapi->SubscribeMarketData(b, 1);
+	//int c = c_mdapi->SubscribeMarketData(b, 1);
+	int futures_count = 0;
+	for (std::string contractID: FA) {
+		QStandardItem* contractIDItem = new QStandardItem(contractID.c_str());
+
+		contractIDItem->setEditable(false);
+		model3->setItem(futures_count, 0, contractIDItem);
+		++futures_count;
+	}
 	
 	qDebug("<mdquotaSubscribeMarketData[%d]>\n", c);
 	ui->label_5->setText(QString::number(0));
@@ -879,7 +909,10 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 					//}
 					i = i + 1;
 				}
+
+				
 				ui->tableView->setModel(model);
+				ui->tableView_3->setModel(model3);
 				
 				onrtnnumber = onrtnnumber + 1;
 				ui->tableView->setColumnWidth(0, 35);
@@ -978,6 +1011,7 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 				model->item(rowaskx, 2)->setBackground(QBrush(QColor(255, 0, 0)));
 				model->item(rowbidx, 2)->setBackground(QBrush(QColor(0, 209, 255)));
 
+
 				if (rowask < rowaskx) {
 					//ui->ddd->setText("aaa");
 
@@ -985,7 +1019,8 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 						//	ui->ddd->setText("aaa111");
 
 						if (tmp < rowbidx) {
-							model->item(tmp, 2)->setBackground(QBrush(QColor(255, 0, 0)));
+							QStandardItem* item = model->item(tmp, 2);
+							if (item) { item->setBackground(QBrush(QColor(255, 0, 0))); }
 						}
 					}
 				}
@@ -995,8 +1030,8 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 					for (tmp = rowaskx + 1; tmp < rowbidx; tmp++) {
 						//if (tmp<rowbidx) {
 						//	ui->ddd->setText("bbb111");
-
-						model->item(tmp, 2)->setBackground(QBrush(QColor(255, 255, 255)));//红色
+						QStandardItem* item = model->item(tmp, 2);
+						if (item) { item->setBackground(QBrush(QColor(255, 255, 255))); }
 					//	model->item(tmp, 0)->setBackground(QBrush(QColor(255, 0, 0)));
 
 				//	}
@@ -1008,8 +1043,8 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 					for (tmp = rowbid; tmp >= rowbidx; tmp--) {
 						if (tmp > rowaskx) {
 							//	ui->ddd->setText("ccc111");
-
-							model->item(tmp, 2)->setBackground(QBrush(QColor(0, 209, 255)));
+							QStandardItem* item = model->item(tmp, 2);
+							if (item) { item->setBackground(QBrush(QColor(0, 209, 255))); }
 						}
 					}
 				}
@@ -1020,8 +1055,8 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 
 						//if (tmp > rowaskx) {
 						//	ui->ddd->setText("ddd111");
-
-						model->item(tmp, 2)->setBackground(QBrush(QColor(255, 255, 255)));//绿色
+						QStandardItem* item = model->item(tmp, 2);
+						if (item) { item->setBackground(QBrush(QColor(255, 255, 255))); }
 				//	}
 					}
 				}

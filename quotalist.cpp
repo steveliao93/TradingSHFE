@@ -172,7 +172,7 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 	t->setWindowTitle(m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column())).toString().toLatin1().data());
 	//qDebug("<555>\n");
 
-	t->mdqutaqry(instID_list);
+	t->mdqutaqry(instID_list, m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
 	//Sleep(3000);
 	t->setqstan();
 	//t->showtable();
@@ -214,7 +214,8 @@ void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThos
 	}
 	m_pInfoModel->setItem(ib, 0, new QStandardItem(pInstrument->ExchangeInstID));
 	m_pInfoModel->setItem(ib, 1, new QStandardItem(QString::number(pInstrument->PriceTick)));
-	m_pInfoModel->setItem(ib++, 2, new QStandardItem(pInstrument->ExchangeID));
+	m_pInfoModel->setItem(ib, 2, new QStandardItem(pInstrument->ProductID));
+	m_pInfoModel->setItem(ib++, 3, new QStandardItem(pInstrument->ExchangeID));
 	vec.push_back(*pInstrument);
 	instID_list.push_back(pInstrument->ExchangeInstID);
 
@@ -240,6 +241,7 @@ void quotalist::saveContractList()
 	for (const auto& instrument : vec) {
 		outputFile << "ExchangeInstID: " << instrument.ExchangeInstID << std::endl;
 		outputFile << "PriceTick: " << instrument.PriceTick << std::endl;
+		outputFile << "ProductID: " << instrument.ProductID << std::endl;
 		outputFile << "ExchangeID: " << instrument.ExchangeID << std::endl;
 	}
 	outputFile.close();
@@ -267,17 +269,22 @@ void quotalist::readContractList()
 
 			if (key == "ExchangeInstID") {
 				m_pInfoModel->setItem(ib, 0, new QStandardItem(value.data()));
+				instID_list.push_back(value);
 			}
 			else if (key == "PriceTick") {
 				m_pInfoModel->setItem(ib, 1, new QStandardItem(QString::number(std::stod(value))));
 			}
+			else if (key == "ProductID") {
+				m_pInfoModel->setItem(ib, 2, new QStandardItem(value.data()));
+			}
 			else if (key == "ExchangeID") {
-				m_pInfoModel->setItem(ib++, 2, new QStandardItem(value.data()));
+				m_pInfoModel->setItem(ib++, 3, new QStandardItem(value.data()));
 			}
 		}
 	}
 	inputFile.close();
 	std::cout << "Quota list loaded." << std::endl;
+	sem_post(&sem1);
 }
 
 void quotalist::on_updateQuotalist_clicked()

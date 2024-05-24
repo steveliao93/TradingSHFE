@@ -13,6 +13,7 @@
 #include <semaphore.h>
 #include <QMouseEvent>
 #include <QKeyEvent>
+#include <unordered_map>
 
 namespace Ui {
 	class mdquota;
@@ -78,6 +79,7 @@ private:
 	int chicankong = 0;
 	int yeschicanduo = 0;
 	int yeschicankong = 0;
+	std::unordered_map<std::string, int> preValuesMap;
 	CThostFtdcDepthMarketDataField PDepthMarketData;
 	void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 	void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData);
@@ -102,10 +104,10 @@ private:
 
 	int i=0;
 public:
-	mdquota(char* mdquotaname, double PriceTick, char *exchangeid,QWidget* parent = Q_NULLPTR);
+	mdquota(char* mdquotaname, double PriceTick, char *exchangeid, QWidget* parent = Q_NULLPTR);
 	~mdquota();
 	void setTradeApi(CTraderApi* TradeApi, CTraderSpi* ATradeSpi, CMdSpi* Cmdspi , CMdApi* Cmdapi);
-	void mdqutaqry(std::vector<std::string> instID_list);
+	void mdqutaqry(std::vector<std::string> instID_list, char* ProductID);
 	void setqstan();
 
 protected:
@@ -120,6 +122,7 @@ private slots:
 	//void showtable(CThostFtdcDepthMarketDataField* pDepthMarketData);
 	void rightcheck(QPoint pos);
 	void slotdlgReturn(int a);
+	void on_applyPreValue_clicked();
 private:
 	Ui::mdquota *ui;
 };
