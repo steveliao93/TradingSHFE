@@ -9,6 +9,7 @@
 #include <iostream>
 #include <cstring>
 #include <algorithm>
+#include "simplelinearregression.h"
 //#include "SqliteOperator.h"
 #include <mmsystem.h>
 #include <Windows.h>

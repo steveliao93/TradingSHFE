@@ -73,6 +73,9 @@
     <ClCompile Include="dataload.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="simplelinearregression.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="traderapi.h">
@@ -115,6 +118,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ThostFtdcUserApiStruct.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="simplelinearregression.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -6,6 +6,7 @@
 #include "traderspi.h"
 #include "mdapi.h"
 #include "mdspi.h"
+#include "simplelinearregression.h"
 
 #include "ThostFtdcTraderApi.h"
 #include <QstandardItem>
@@ -18,6 +19,7 @@
 namespace Ui {
 	class mdquota;
 }
+
 
 class mdquota : public QWidget, public CThostFtdcTraderSpi,public CThostFtdcMdSpi
 {

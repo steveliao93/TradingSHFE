@@ -215,7 +215,8 @@ void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThos
 	m_pInfoModel->setItem(ib, 0, new QStandardItem(pInstrument->ExchangeInstID));
 	m_pInfoModel->setItem(ib, 1, new QStandardItem(QString::number(pInstrument->PriceTick)));
 	m_pInfoModel->setItem(ib, 2, new QStandardItem(pInstrument->ProductID));
-	m_pInfoModel->setItem(ib++, 3, new QStandardItem(pInstrument->ExchangeID));
+	m_pInfoModel->setItem(ib, 3, new QStandardItem(pInstrument->ExchangeID));
+	m_pInfoModel->setItem(ib++, 4, new QStandardItem(pInstrument->ExpireDate));
 	vec.push_back(*pInstrument);
 	instID_list.push_back(pInstrument->ExchangeInstID);
 
@@ -243,6 +244,7 @@ void quotalist::saveContractList()
 		outputFile << "PriceTick: " << instrument.PriceTick << std::endl;
 		outputFile << "ProductID: " << instrument.ProductID << std::endl;
 		outputFile << "ExchangeID: " << instrument.ExchangeID << std::endl;
+		outputFile << "ExpireDate: " << instrument.ExpireDate << std::endl;
 	}
 	outputFile.close();
 
@@ -278,7 +280,10 @@ void quotalist::readContractList()
 				m_pInfoModel->setItem(ib, 2, new QStandardItem(value.data()));
 			}
 			else if (key == "ExchangeID") {
-				m_pInfoModel->setItem(ib++, 3, new QStandardItem(value.data()));
+				m_pInfoModel->setItem(ib, 3, new QStandardItem(value.data()));
+			}
+			else if (key == "ExpireDate") {
+				m_pInfoModel->setItem(ib++, 4, new QStandardItem(value.data()));
 			}
 		}
 	}
