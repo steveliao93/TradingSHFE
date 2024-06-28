@@ -13,12 +13,15 @@
 //#include "SqliteOperator.h"
 #include <mmsystem.h>
 #include <Windows.h>
+#include <quotalist.h>
+#include <chrono>
 #include <QKeyEvent>
 #include <fstream>
 #include <QtCore/QTextStream>
 #include <QtCore/QFile> 
 #include <QtCore/QIODevice>
 #include <QFileInfo>
+
 
 #pragma comment (lib,"winmm.lib")
 
@@ -293,18 +296,49 @@ void mdquota::OnFrontConnected() {
 }
 
 void mdquota::on_applyPreValue_clicked() {
+	std::vector<double> trainData;
+	std::vector<double> trainTarget;
 	for (int i = 0; i < model3->rowCount(); ++i) {
 		QString contractName = model3->item(i, 0)->text();
 		QStandardItem* item = model3->item(i, 1);
 		int preValue;
 		if (item) { preValue = item->text().toInt(); }
 		else { preValue = 0; }
-		
+		std::string rawDate = pInstExpiredate_map[contractName.toStdString()];
+		trainData.push_back(datesDifference(rawDate)/365);
 		preValuesMap[contractName.toStdString()] = preValue;
 	}
 }
 
-void mdquota::mdqutaqry(std::vector<std::string> instID_list, char* ProductID) {
+int mdquota::datesDifference(std::string expiredate) {
+	// 获取当前系统时间
+	auto now = std::chrono::system_clock::now();
+
+	// 将时间点转换为日期
+	time_t tt = std::chrono::system_clock::to_time_t(now);
+	tm local_tm = *localtime(&tt);
+
+	// 将日期转换为 year_month_day
+	int year_today = local_tm.tm_year + 1900;
+	int year_month = local_tm.tm_mon + 1;
+	int year_day = local_tm.tm_mday;
+	std::tm time_in_today = { 0, 0, 0, local_tm.tm_mday, local_tm.tm_mon, local_tm.tm_year };
+	std::time_t time_temp_today = std::mktime(&time_in_today);
+	
+	int year_expire = std::stoi(expiredate.substr(0, 4));
+	int month_expire = std::stoi(expiredate.substr(4, 2));
+	int day_expire = std::stoi(expiredate.substr(6, 2));
+	
+	std::tm time_in_expire = { 0, 0, 0, day_expire, month_expire - 1, year_expire - 1900 };
+	std::time_t time_temp_expire = std::mktime(&time_in_expire);
+
+	int days_in_between = std::difftime(time_temp_expire, time_temp_today) / (60 * 60 * 24);
+	
+	return days_in_between;
+
+}
+
+void mdquota::mdqutaqry(std::vector<std::string> instID_list, std::unordered_map<std::string, char*> instExpiredate_map, char* ProductID) {
 	ui->lineEdit->setText(userid);
 	ui->ddd->setText("start.............");
 	////ui->label
@@ -322,6 +356,7 @@ void mdquota::mdqutaqry(std::vector<std::string> instID_list, char* ProductID) {
 	//ui->tableView->setModel(model);
 	//virtual int ReqQryInvestorPosition(CThostFtdcQryInvestorPositionField * pQryInvestorPosition, int nRequestID) = 0;
 	char* b[] = { Mdquotaname };
+	pInstExpiredate_map = instExpiredate_map;
 	
 	char* futureArrays[20];
 	int resultCount = 0;

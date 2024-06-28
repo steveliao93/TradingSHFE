@@ -12,6 +12,8 @@
 #include "traderspi.h"
 #include <QSortFilterProxyModel>
 #include <vector>
+#include <unordered_map>
+
 //#include "Hook.h"
 
 namespace Ui {
@@ -54,6 +56,7 @@ public:
 	void readContractList();
 	char InstrumentID[31];
 	std::vector<std::string> instID_list;
+	std::unordered_map<std::string, char*> instExpiredate_map;
 	//void searchAndFilterLocalSlot();
 	//void hookinstall();
 

@@ -9,12 +9,14 @@
 #include <QTextStream>
 
 
+
 extern CTraderApi* C_TradeApi;
 extern CTraderSpi* C_TradeSpi;
 extern CMdApi* C_MdApi;
 extern CMdSpi* C_MdSpi;
 extern int requestId;
 extern char userid[16];
+
 
 quotalist::quotalist(QWidget *parent)
 	: QWidget(parent),
@@ -172,7 +174,7 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 	t->setWindowTitle(m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column())).toString().toLatin1().data());
 	//qDebug("<555>\n");
 
-	t->mdqutaqry(instID_list, m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
+	t->mdqutaqry(instID_list, instExpiredate_map, m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
 	//Sleep(3000);
 	t->setqstan();
 	//t->showtable();
@@ -219,6 +221,8 @@ void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThos
 	m_pInfoModel->setItem(ib++, 4, new QStandardItem(pInstrument->ExpireDate));
 	vec.push_back(*pInstrument);
 	instID_list.push_back(pInstrument->ExchangeInstID);
+	instExpiredate_map[pInstrument->ExchangeInstID] = pInstrument->ExpireDate;
+
 
 	if (bIsLast) {
 		saveContractList();
@@ -268,10 +272,12 @@ void quotalist::readContractList()
 		if (pos != std::string::npos) {
 			std::string key = line.substr(0, pos);
 			std::string value = line.substr(pos + 2); 
+			std::string current_exchangeinstid;
 
 			if (key == "ExchangeInstID") {
 				m_pInfoModel->setItem(ib, 0, new QStandardItem(value.data()));
 				instID_list.push_back(value);
+				current_exchangeinstid = value;
 			}
 			else if (key == "PriceTick") {
 				m_pInfoModel->setItem(ib, 1, new QStandardItem(QString::number(std::stod(value))));
@@ -284,6 +290,7 @@ void quotalist::readContractList()
 			}
 			else if (key == "ExpireDate") {
 				m_pInfoModel->setItem(ib++, 4, new QStandardItem(value.data()));
+				instExpiredate_map[current_exchangeinstid] = value.data();
 			}
 		}
 	}
