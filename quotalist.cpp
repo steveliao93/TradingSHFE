@@ -157,7 +157,13 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 		//QMessageBox::information(this, "Notice", "error");
 		return;
 	}
-	mdquota* t = new mdquota(m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column())).toString().toLatin1().data(), m_pFilterModel->data(m_pFilterModel->index(index.row(),index.column()+1)).toDouble(), m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
+
+	char* quotaname = m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column())).toString().toLatin1().data();
+	subscribed_futures[subscribed_numbers] = new char[std::strlen(quotaname) + 1];
+	std::strcpy(subscribed_futures[subscribed_numbers], quotaname);
+	++subscribed_numbers;
+
+	mdquota* t = new mdquota(quotaname, m_pFilterModel->data(m_pFilterModel->index(index.row(),index.column()+1)).toDouble(), m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
 	connect(this, SIGNAL(dlgReturn(int)), t, SLOT(slotdlgReturn(int)));
 
 	//qDebug("<222>\n");

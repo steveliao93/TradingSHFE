@@ -81,9 +81,9 @@ private:
 	int chicankong = 0;
 	int yeschicanduo = 0;
 	int yeschicankong = 0;
-	std::unordered_map<std::string, int> preValuesMap;
 	CThostFtdcDepthMarketDataField PDepthMarketData;
 	std::unordered_map<std::string, char*> pInstExpiredate_map;
+	std::unordered_map<std::string, double> pInstLastprice_map;
 	void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 	void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData);
 	void OnFrontConnected();

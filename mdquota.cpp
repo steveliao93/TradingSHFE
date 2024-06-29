@@ -298,6 +298,8 @@ void mdquota::OnFrontConnected() {
 void mdquota::on_applyPreValue_clicked() {
 	std::vector<double> trainData;
 	std::vector<double> trainTarget;
+	double prediction;
+	double profit;
 	for (int i = 0; i < model3->rowCount(); ++i) {
 		QString contractName = model3->item(i, 0)->text();
 		QStandardItem* item = model3->item(i, 1);
@@ -305,8 +307,16 @@ void mdquota::on_applyPreValue_clicked() {
 		if (item) { preValue = item->text().toInt(); }
 		else { preValue = 0; }
 		std::string rawDate = pInstExpiredate_map[contractName.toStdString()];
+		double lastprice = pInstLastprice_map[contractName.toStdString()];
 		trainData.push_back(datesDifference(rawDate)/365);
-		preValuesMap[contractName.toStdString()] = preValue;
+		trainTarget.push_back(std::log( lastprice + preValue));
+	}
+
+	slr regression = slr(trainData, trainTarget);
+
+	for (int i = 0; i < model3->rowCount(); ++i) {
+		prediction = regression.b0 + regression.b1*trainData[i];
+		profit = std::exp(trainTarget[i]) - std::exp(prediction);
 	}
 }
 
@@ -792,6 +802,7 @@ void mdquota::OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketD
 	if (pDepthMarketData->BidPrice1 > pDepthMarketData->UpperLimitPrice * 100 || pDepthMarketData->AskPrice1 <= 0) {
 		return;
 	}
+	pInstLastprice_map[pDepthMarketData->InstrumentID] = pDepthMarketData->LastPrice;
 	if (strcmp(pDepthMarketData->InstrumentID, Mdquotaname) == 0) {
 		hangqingnum = 0;
 		if (hanqingtuisongnum > 5000) {

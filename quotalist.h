@@ -57,6 +57,8 @@ public:
 	char InstrumentID[31];
 	std::vector<std::string> instID_list;
 	std::unordered_map<std::string, char*> instExpiredate_map;
+	char* subscribed_futures[20];
+	int subscribed_numbers = 0;
 	//void searchAndFilterLocalSlot();
 	//void hookinstall();
 
