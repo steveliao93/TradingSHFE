@@ -94,9 +94,10 @@ mdquota::mdquota(char* mdquotaname, double PriceTick,char *exchangeid, QWidget* 
 
 	}
 	//model->setItem(1, 1, new QStandardItem(""));
-	model3->setColumnCount(2);
+	model3->setColumnCount(3);
 	model3->setHeaderData(0, Qt::Horizontal, QStringLiteral("合约ID"));
 	model3->setHeaderData(1, Qt::Horizontal, QStringLiteral("预值"));
+	model3->setHeaderData(2, Qt::Horizontal, QStringLiteral("Profit"));
 
 	
 
@@ -258,25 +259,7 @@ mdquota::~mdquota()
 
 	delete ui;
 }
-//void mdquota::timerEvent(QTimerEvent* event)
-//{
-//	if (event->timerId() == timeid) {       // 判断是哪个定时器
-//		///ui->label->setText(tr("%1").arg(qrand() % 10));
-//		//ui->tableView->scrollTo(ui->tableView->model()->index(rowask, 0));
-//		//ui->tableView->scrollTo(ui->tableView->model()->index(rowask, 0));
-//		if (rowask != 0) {
-//			ui->tableView->scrollTo(ui->tableView->model()->index(rowask + 35, 0));
-//		}
-//		//ui->ddd->setText(QString::number(rowask));
-//
-//		//ui->tableView->horizontalScrollBar()->setSliderPosition(rowbid);
-//		//ui->tableView->setVertiScrollBar()
-//
-//	}
-//	else {
-//		qApp->quit();
-//	}
-//}
+
 void mdquota::setTradeApi(CTraderApi* TradeApi, CTraderSpi* ATradeSpi, CMdSpi* Cmdspi, CMdApi* Cmdapi) {
 	m_tradeApi = TradeApi;
 	m_TradeSpi = ATradeSpi;
@@ -317,6 +300,8 @@ void mdquota::on_applyPreValue_clicked() {
 	for (int i = 0; i < model3->rowCount(); ++i) {
 		prediction = regression.b0 + regression.b1*trainData[i];
 		profit = std::exp(trainTarget[i]) - std::exp(prediction);
+		QStandardItem* profitItem = new QStandardItem(QString::number(profit));
+		model3->setItem(i, 2, profitItem);
 	}
 }
 
@@ -960,6 +945,9 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 				
 				ui->tableView->setModel(model);
 				ui->tableView_3->setModel(model3);
+				ui->tableView_3->setColumnWidth(0, 35);
+				ui->tableView_3->setColumnWidth(1, 35);
+				ui->tableView_3->setColumnWidth(2, 35);
 				
 				onrtnnumber = onrtnnumber + 1;
 				ui->tableView->setColumnWidth(0, 35);
