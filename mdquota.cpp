@@ -291,7 +291,8 @@ void mdquota::on_applyPreValue_clicked() {
 		else { preValue = 0; }
 		std::string rawDate = pInstExpiredate_map[contractName.toStdString()];
 		double lastprice = pInstLastprice_map[contractName.toStdString()];
-		trainData.push_back(datesDifference(rawDate)/365);
+		int diffDays = datesDifference(rawDate);
+		trainData.push_back(static_cast<double>(diffDays)/365);
 		trainTarget.push_back(std::log( lastprice + preValue));
 	}
 
@@ -333,7 +334,7 @@ int mdquota::datesDifference(std::string expiredate) {
 
 }
 
-void mdquota::mdqutaqry(std::vector<std::string> instID_list, std::unordered_map<std::string, char*> instExpiredate_map, char* ProductID) {
+void mdquota::mdqutaqry(std::vector<std::string> instID_list, std::unordered_map < std::string, std::string > instExpiredate_map, char* ProductID) {
 	ui->lineEdit->setText(userid);
 	ui->ddd->setText("start.............");
 	////ui->label

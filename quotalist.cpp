@@ -163,7 +163,7 @@ void quotalist::onTableClicked(const QModelIndex& index) {
 	std::strcpy(subscribed_futures[subscribed_numbers], quotaname);
 	++subscribed_numbers;
 
-	mdquota* t = new mdquota(quotaname, m_pFilterModel->data(m_pFilterModel->index(index.row(),index.column()+1)).toDouble(), m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
+	mdquota* t = new mdquota(m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column())).toString().toLatin1().data(), m_pFilterModel->data(m_pFilterModel->index(index.row(),index.column()+1)).toDouble(), m_pFilterModel->data(m_pFilterModel->index(index.row(), index.column() + 2)).toString().toLatin1().data());
 	connect(this, SIGNAL(dlgReturn(int)), t, SLOT(slotdlgReturn(int)));
 
 	//qDebug("<222>\n");
@@ -227,7 +227,7 @@ void quotalist::OnRspQryInstrument(CThostFtdcInstrumentField* pInstrument, CThos
 	m_pInfoModel->setItem(ib++, 4, new QStandardItem(pInstrument->ExpireDate));
 	vec.push_back(*pInstrument);
 	instID_list.push_back(pInstrument->ExchangeInstID);
-	instExpiredate_map[pInstrument->ExchangeInstID] = pInstrument->ExpireDate;
+	instExpiredate_map[pInstrument->ExchangeInstID] = std::string(pInstrument->ExpireDate);
 
 
 	if (bIsLast) {
@@ -271,14 +271,13 @@ void quotalist::readContractList()
 	}
 
 	std::string line;
-	
+	std::string current_exchangeinstid;
 	while (std::getline(inputFile, line)) {
 		// Assuming each line has format "Key: Value"
 		size_t pos = line.find(": ");
 		if (pos != std::string::npos) {
 			std::string key = line.substr(0, pos);
 			std::string value = line.substr(pos + 2); 
-			std::string current_exchangeinstid;
 
 			if (key == "ExchangeInstID") {
 				m_pInfoModel->setItem(ib, 0, new QStandardItem(value.data()));
@@ -296,7 +295,7 @@ void quotalist::readContractList()
 			}
 			else if (key == "ExpireDate") {
 				m_pInfoModel->setItem(ib++, 4, new QStandardItem(value.data()));
-				instExpiredate_map[current_exchangeinstid] = value.data();
+				instExpiredate_map[current_exchangeinstid] = value;
 			}
 		}
 	}

@@ -82,7 +82,7 @@ private:
 	int yeschicanduo = 0;
 	int yeschicankong = 0;
 	CThostFtdcDepthMarketDataField PDepthMarketData;
-	std::unordered_map<std::string, char*> pInstExpiredate_map;
+	std::unordered_map<std::string, std::string> pInstExpiredate_map;
 	std::unordered_map<std::string, double> pInstLastprice_map;
 	void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 	void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData);
@@ -112,7 +112,7 @@ public:
 	mdquota(char* mdquotaname, double PriceTick, char *exchangeid, QWidget* parent = Q_NULLPTR);
 	~mdquota();
 	void setTradeApi(CTraderApi* TradeApi, CTraderSpi* ATradeSpi, CMdSpi* Cmdspi , CMdApi* Cmdapi);
-	void mdqutaqry(std::vector<std::string> instID_list, std::unordered_map<std::string, char*> instExpiredate_map, char* ProductID);
+	void mdqutaqry(std::vector<std::string> instID_list, std::unordered_map<std::string, std::string> instExpiredate_map, char* ProductID);
 	void setqstan();
 
 protected:
