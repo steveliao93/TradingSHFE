@@ -83,6 +83,7 @@ private:
 	int yeschicankong = 0;
 	CThostFtdcDepthMarketDataField PDepthMarketData;
 	std::unordered_map<std::string, std::string> pInstExpiredate_map;
+	std::unordered_map<std::string, double> pInstPrevalue_map;
 	std::unordered_map<std::string, double> pInstLastprice_map;
 	void OnRspQryDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData, CThostFtdcRspInfoField* pRspInfo, int nRequestID, bool bIsLast);
 	void OnRtnDepthMarketData(CThostFtdcDepthMarketDataField* pDepthMarketData);
@@ -103,6 +104,7 @@ private:
 	int chaxunbaodan();
 
 	int datesDifference(std::string expiredate);
+	void calculateProfit();
 
 	//void InsertData(char* instrumentid, char* orderref, char direction, double limitprice);
 	//void DeleteData(char orderref[13]);

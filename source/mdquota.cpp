@@ -286,20 +286,34 @@ void mdquota::on_applyPreValue_clicked() {
 	for (int i = 0; i < model3->rowCount(); ++i) {
 		QString contractName = model3->item(i, 0)->text();
 		QStandardItem* item = model3->item(i, 1);
-		int preValue;
-		if (item) { preValue = item->text().toInt(); }
-		else { preValue = 0; }
+		double preValue;
+		if (item) { preValue = item->text().toDouble(); }
+		else { preValue = 0.0; }
+		pInstPrevalue_map[contractName.toStdString()] = preValue;
+	}
+}
+
+void mdquota::calculateProfit() {
+	std::vector<double> trainData;
+	std::vector<double> trainTarget;
+	double prediction;
+	double profit;
+
+	for (int i = 0; i < model3->rowCount(); ++i) {
+		QString contractName = model3->item(i, 0)->text();
+		double preValue = pInstPrevalue_map[contractName.toStdString()];
 		std::string rawDate = pInstExpiredate_map[contractName.toStdString()];
 		double lastprice = pInstLastprice_map[contractName.toStdString()];
 		int diffDays = datesDifference(rawDate);
-		trainData.push_back(static_cast<double>(diffDays)/365);
-		trainTarget.push_back(std::log( lastprice + preValue));
+		trainData.push_back(static_cast<double>(diffDays) / 365);
+		trainTarget.push_back(std::log(lastprice + preValue));
+
 	}
 
 	slr regression = slr(trainData, trainTarget);
 
 	for (int i = 0; i < model3->rowCount(); ++i) {
-		prediction = regression.b0 + regression.b1*trainData[i];
+		prediction = regression.b0 + regression.b1 * trainData[i];
 		profit = std::exp(trainTarget[i]) - std::exp(prediction);
 		QStandardItem* profitItem = new QStandardItem(QString::number(profit));
 		model3->setItem(i, 2, profitItem);
@@ -376,9 +390,13 @@ void mdquota::mdqutaqry(std::vector<std::string> instID_list, std::unordered_map
 	int futures_count = 0;
 	for (std::string contractID: FA) {
 		QStandardItem* contractIDItem = new QStandardItem(contractID.c_str());
+		QStandardItem* prevalueitem = new QStandardItem();
 
 		contractIDItem->setEditable(false);
+		prevalueitem->setData(0, Qt::DisplayRole);
 		model3->setItem(futures_count, 0, contractIDItem);
+		model3->setItem(futures_count, 1, prevalueitem);
+		pInstPrevalue_map[contractID] = 0.0;
 		++futures_count;
 	}
 	
@@ -1154,6 +1172,9 @@ void mdquota::showtable(CThostFtdcDepthMarketDataField* pDepthMarketData){
 				rowbid = rowbidx;
 				rowask = rowaskx;
 				lastprice = pDepthMarketData->LastPrice;
+
+				// Calculate Profit
+				calculateProfit();
 			}
 			/*	model->setItem(i++, 1, new QStandardItem(QString::number(pDepthMarketData->LastPrice)));
 				ui->tableView->setModel(model);

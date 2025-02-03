@@ -42,7 +42,7 @@ quotalist::quotalist(QWidget *parent)
 	ui->tablelist->setCurrentIndex(index);
 	ui->tablelist->setModel(m_pFilterModel);
 	//connect(this->ui->lineEdit, SIGNAL(clicked(const QModelIndex&)))
-		connect(this->ui->lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(searchAndFilterLocalSlot()));
+	connect(this->ui->lineEdit, SIGNAL(textChanged(const QString&)), this, SLOT(searchAndFilterLocalSlot()));
 
 
 	//m_TradeSpi->RegisterSpi(this);
