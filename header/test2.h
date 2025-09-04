@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QMainWindow>
-#include "ui_test2.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_test2.h"
 
 class test2 : public QMainWindow
 {

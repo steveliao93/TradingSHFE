@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include <QWidget>
-#include "ui_mdquota.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_mdquota.h"
 #include "traderapi.h"
 #include "traderspi.h"
 #include "mdapi.h"

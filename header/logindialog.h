@@ -18,7 +18,7 @@
 #ifndef LOGINDIALOG_H
 #define LOGINDIALOG_H
 //#include <QtWidgets/QDialog>
-#include "ui_logindialog.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_logindialog.h"
 #include <QDialog>
 #include "traderapi.h"
 #include "traderspi.h"

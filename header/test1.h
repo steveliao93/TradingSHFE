@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QWidget>
-#include "ui_test1.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_test1.h"
 
 class test1 : public QWidget
 {

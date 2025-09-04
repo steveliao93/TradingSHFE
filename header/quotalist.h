@@ -2,7 +2,7 @@
 #include "ThostFtdcTraderApi.h"
 #include  "ThostFtdcMdApi.h"
 #include <QWidget>
-#include "ui_quotalist.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_quotalist.h"
 #include <QstandardItem>
 #include <QTableView>
 #include <semaphore.h>

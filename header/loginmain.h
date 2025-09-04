@@ -1,16 +1,16 @@
 #pragma once
 
 #include <QMainWindow>
-#include "ui_loginmain.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_loginmain.h"
 #include "loginmain.h"
 #include "main.h"
 //#include "mainwindow.h"
 #include "logindialog.h"
 #include "loginmain.h"
 #include <QApplication>
-#include "ui_loginmain.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_loginmain.h"
 #include <QDebug>
-#include "ui_logindialog.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_logindialog.h"
 #include <QDateTime>
 #include <QTimer>
 class loginmain : public QMainWindow

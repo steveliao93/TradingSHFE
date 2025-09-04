@@ -1,7 +1,7 @@
 #pragma once
 
 #include <QDialog>
-#include "ui_test3.h"
+#include "../TradingSHFE/x64/Debug/qt/uic/ui_test3.h"
 
 class test3 : public QDialog
 {
