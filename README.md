@@ -53,11 +53,12 @@ Built with Qt framework providing:
 - **Main Window** (`loginmain.ui`): Application control center
 - **Market Data Widget** (`mdquota.ui`): Real-time price display and trading controls
 
-  <img width="790" height="624" alt="image" src="https://github.com/user-attachments/assets/89124790-d41c-4a35-942e-b74819048248" />
+  <img width="353" height="1204" alt="image" src="https://github.com/user-attachments/assets/311507f6-7454-4ee6-aa8c-0b7050e8e02d" />
+
 - **Data Management** (`dataload.ui`): Data loading and management
 - **Quote Lists** (`quotalist.ui`): Instrument subscription management
 
-  <img width="140" height="429" alt="image" src="https://github.com/user-attachments/assets/eff2f16f-ea2e-4815-b334-28a9fcbf8efd" />
+  <img width="140" height="413" alt="image" src="https://github.com/user-attachments/assets/353e69a2-8be7-43b9-a6b9-8b9e3c339afa" />
 
 ## Project Structure
 
