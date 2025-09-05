@@ -1,10 +1,10 @@
 # C++ Qt Trading System for SHFE
 
-A professional trading software developed in C++ with Qt framework for Shanghai Futures Exchange (SHFE) connectivity. This system provides real-time market data, order management, and trading capabilities through a modern Qt GUI interface.
+A software developed in C++ with Qt framework for Shanghai Futures Exchange (SHFE) connectivity. This system provides real-time market data, order management, and trading capabilities through a modern Qt GUI interface. This software aims to offer an efficient trading environment for discretionary traders.
 
 ## Overview
 
-This trading system is designed to connect directly to SHFE (Shanghai Futures Exchange) servers using the CTP (Comprehensive Transaction Platform) API. The application provides a complete trading solution with authentication, market data subscription, order placement, and position management.
+This trading system is designed to connect directly to SHFE (Shanghai Futures Exchange) servers using the CTP (Comprehensive Transaction Platform) API. The application provides a complete solution with authentication, market data subscription, order placement, and position management.
 
 ## Features
 
@@ -47,10 +47,17 @@ The system integrates with SHFE's CTP (Comprehensive Transaction Platform) API:
 Built with Qt framework providing:
 
 - **Login Dialog** (`logindialog.ui`): Server selection and authentication
+  <img width="626" height="391" alt="image" src="https://github.com/user-attachments/assets/9e1ba9d2-6c6d-46d2-9a42-c11e544826a7" />
+  <img width="436" height="398" alt="image" src="https://github.com/user-attachments/assets/c8a5741f-99eb-4c60-b1c2-95f4231c17a6" />
+
 - **Main Window** (`loginmain.ui`): Application control center
 - **Market Data Widget** (`mdquota.ui`): Real-time price display and trading controls
+
+  <img width="790" height="624" alt="image" src="https://github.com/user-attachments/assets/89124790-d41c-4a35-942e-b74819048248" />
 - **Data Management** (`dataload.ui`): Data loading and management
 - **Quote Lists** (`quotalist.ui`): Instrument subscription management
+
+  <img width="140" height="429" alt="image" src="https://github.com/user-attachments/assets/eff2f16f-ea2e-4815-b334-28a9fcbf8efd" />
 
 ## Project Structure
 
@@ -228,36 +235,6 @@ The system uses SQLite for local data persistence:
 // - Position snapshots
 ```
 
-## Error Handling and Logging
-
-The system includes comprehensive error handling:
-
-- **Connection Failures**: Automatic retry mechanisms
-- **Authentication Errors**: Clear error messaging
-- **API Responses**: Detailed error code handling
-- **GUI Feedback**: Real-time status updates
-
-## API Event Handling
-
-### Trading Events
-```cpp
-// Key callback methods in traderspi.cpp
-void OnFrontConnected();                    // Server connection established
-void OnRspAuthenticate(...);               // Authentication response  
-void OnRspUserLogin(...);                  // Login response
-void OnRspOrderInsert(...);                // Order submission response
-void OnRtnTrade(...);                      // Trade execution notification
-```
-
-### Market Data Events
-```cpp
-// Key callback methods in mdspi.cpp  
-void OnFrontConnected();                   // Market data server connected
-void OnRspUserLogin(...);                 // Market data login response
-void OnRspSubMarketData(...);             // Subscription response
-void OnRtnDepthMarketData(...);           // Real-time market data update
-```
-
 ## Threading and Concurrency
 
 The application handles multiple concurrent operations:
@@ -267,97 +244,6 @@ The application handles multiple concurrent operations:
 - **Database Thread**: Asynchronous data persistence
 - **Timer Updates**: Real-time display refreshes
 
-## Deployment
-
-### Distribution Package
-
-For deployment, include:
-
-```
-LoginDialog.exe                 # Main executable
-Qt6Core.dll                    # Qt runtime libraries  
-Qt6Gui.dll
-Qt6Widgets.dll
-thosttraderapi_se.dll          # CTP API libraries
-thostmduserapi_se.dll
-platforms/                    # Qt platform plugins
-  qwindows.dll
-flow/                         # CTP flow directory (created automatically)
-```
-
-### System Requirements
-
-- **Operating System**: Windows 10 or later
-- **Architecture**: x64
-- **Runtime**: Visual C++ Redistributable 2019 or later
-- **Network**: Internet connection for SHFE server access
-- **Permissions**: Administrator rights for initial setup
-
-## Troubleshooting
-
-### Common Issues
-
-1. **Connection Failures**:
-   - Verify network connectivity
-   - Check server addresses and ports
-   - Ensure firewall allows connections
-
-2. **Authentication Errors**:
-   - Verify credentials with broker
-   - Check BrokerID and AuthCode settings
-   - Ensure account is active and authorized
-
-3. **Market Data Issues**:
-   - Confirm market data subscription permissions
-   - Check instrument symbols and exchange codes
-   - Verify trading session times
-
-4. **Performance Issues**:
-   - Monitor CPU and memory usage
-   - Check database file size and location
-   - Optimize UI refresh rates if needed
-
-### Log Files
-
-The system generates log files in:
-- **Flow Directory**: CTP API logs
-- **Application Logs**: Custom logging (if implemented)
-- **Database**: Error and event logging in SQLite
-
-## Security Considerations
-
-- **Credentials**: Never hardcode production credentials
-- **Network**: Use secure connections (CTP handles encryption)
-- **Data**: Protect local database files
-- **Access**: Implement proper user access controls
-- **Updates**: Regularly update CTP API libraries
-
-## Development and Customization
-
-### Adding New Features
-
-1. **Market Data Enhancements**:
-   - Modify `mdquota.cpp` for display changes
-   - Update `mdspi.cpp` for new data handling
-   - Extend database schema in `SqliteOperator`
-
-2. **Trading Features**:
-   - Enhance `traderapi.cpp` for new order types
-   - Update `traderspi.cpp` for additional callbacks
-   - Modify GUI forms as needed
-
-3. **Database Extensions**:
-   - Add new tables in SQLite schema
-   - Implement corresponding CRUD operations
-   - Update data models for GUI display
-
-### Code Standards
-
-- Follow Qt coding conventions
-- Use RAII for resource management
-- Implement proper error handling
-- Document public interfaces
-- Use version control for changes
 
 ## Migration to Python
 
@@ -369,19 +255,3 @@ A complete Python migration of this C++ system is available in the `python_tradi
 - Comprehensive test suite
 
 See `python_trading_system/README.md` for Python version details.
-
-## License
-
-This project follows the same license terms as the SHFE CTP API. Contact your broker for specific licensing requirements.
-
-## Support
-
-For technical support:
-1. Check this documentation first
-2. Review CTP API documentation from SHFE
-3. Contact your broker's technical support team
-4. Refer to Qt documentation for GUI issues
-
----
-
-**Note**: This is a professional trading system. Always test thoroughly in a development environment before using with live trading accounts. Trading involves financial risk - use appropriate risk management practices.
