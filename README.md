@@ -245,13 +245,4 @@ The application handles multiple concurrent operations:
 - **Timer Updates**: Real-time display refreshes
 
 
-## Migration to Python
-
-A complete Python migration of this C++ system is available in the `python_trading_system/` directory. The Python version provides:
-
-- Same functionality with modern PyQt6 GUI
-- Improved maintainability and deployment
-- Enhanced error handling and logging
-- Comprehensive test suite
-
 See `python_trading_system/README.md` for Python version details.
